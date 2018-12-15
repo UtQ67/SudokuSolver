@@ -15,7 +15,7 @@ public class Solver
 			return true;
 		
 		int nextX = x == 8? 0 : x+1;
-		int nextY = x == 0? y +1: y;
+		int nextY = x == 8? y +1: y;
 		
 		if(sudoku.isWriteable(x, y))
 		{
