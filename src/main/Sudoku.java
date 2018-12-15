@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Iterator;
+
 public class Sudoku
 {
 	private int[][] values;
@@ -32,7 +34,7 @@ public class Sudoku
 	{
 		return writeable[x][y];
 	}
-	
+
 	public String toString()
 	{
 		String ret = "";
@@ -63,4 +65,102 @@ public class Sudoku
 		ret += "-------------\n";
 		return ret;
 	}
+	public Iterator<Integer> rowIterator(int x, int y)
+	{
+		return new SameRowIterator(x, y);
+	}
+	public Iterator<Integer> columnIterator(int x, int y)
+	{
+		return new SameColumnIterator(x, y);
+	}
+	public Iterator<Integer> squareIterator(int x, int y)
+	{
+		return new SameSquareIterator(x,y);
+	}
+	private class SameRowIterator implements Iterator<Integer>
+	{
+		private int x;
+		private int y;
+		
+		public SameRowIterator(int x, int y)
+		{
+			y = 0;
+			this.x = x;
+		}
+		
+		@Override
+		public boolean hasNext()
+		{
+			return  x < 9 && y < 9;
+		}
+		
+		@Override
+		public Integer next()
+		{
+			y++;
+			return values[x][y - 1];
+		}
+	}
+	private class SameColumnIterator  implements Iterator<Integer>
+	{
+		private int x;
+		private int y;
+		
+		public SameColumnIterator(int x, int y)
+		{
+			x = 0;
+			this.y = y;
+		}
+		
+		@Override
+		public boolean hasNext()
+		{
+			return  x < 9 && y < 9;
+		}
+		
+		@Override
+		public Integer next()
+		{
+			x++;
+			return values[x - 1][y];
+		}
+	}
+	
+	private class SameSquareIterator  implements Iterator<Integer>
+	{
+		private int boxX;
+		private int boxY;
+		
+		private int yOffset = 0;
+		private int xOffset = 0;
+		
+		public SameSquareIterator(int x, int y)
+		{
+			boxX = x - x%3;
+			boxY = y - y%3;
+		}
+		
+		@Override
+		public boolean hasNext()
+		{
+			return !(yOffset == 2 && xOffset == 2);
+		}
+		
+		@Override
+		public Integer next()
+		{
+			int ret = values[boxX + xOffset] [boxY + yOffset];
+			
+			
+			yOffset ++;
+			if(yOffset == 3)
+			{
+				yOffset = 0;
+				xOffset++;
+			}
+			
+			return ret;
+		}
+	}
+	
 }

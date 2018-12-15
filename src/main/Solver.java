@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Iterator;
+
 public class Solver
 {
 	
@@ -34,25 +36,26 @@ public class Solver
 		return solve(sudoku, nextX, nextY);
 	}
 	
+	private boolean iteratorConflict(Iterator<Integer> iterator, int value)
+	{
+		while (iterator.hasNext())
+			if(iterator.next() == value)
+				return true;
+		return false;
+	}
+	
 	private boolean conflictAt(Sudoku sudoku, int x, int y, int value)
 	{
-		for (int xCheck = 0; xCheck < 9; xCheck++)
-			if(sudoku.getValue(xCheck, y) == value)
-				return true;
+		Iterator<Integer> iterator = sudoku.rowIterator(x, y);
+		if(iteratorConflict(iterator, value)) return true;
 		
-		for (int yCheck = 0; yCheck < 9; yCheck++)
-			if(sudoku.getValue(x, yCheck) == value)
-				return true;
+		iterator = sudoku.columnIterator(x, y);
+		if(iteratorConflict(iterator, value)) return true;
 		
-			
-		int boxX = x - x%3;
-		int boxY = y - y%3;
-		for (int boxOffsetX = 0; boxOffsetX < 3; boxOffsetX++)
-			for (int boxOffsetY = 0; boxOffsetY < 3; boxOffsetY++)
-				if(sudoku.getValue(boxX + boxOffsetX, boxY + boxOffsetY) == value)
-					return true;
-				
-				
+		iterator=sudoku.squareIterator(x, y);
+		if(iteratorConflict(iterator, value)) return true;
+		
 		return false;
+
 	}
 }
